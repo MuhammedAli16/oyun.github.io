@@ -1,0 +1,154 @@
+
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hedefe Tıkla Oyunu</title>
+
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #141e30, #243b55);
+            color: white;
+            text-align: center;
+        }
+
+        h1 {
+            margin-top: 30px;
+            color: #00ffcc;
+        }
+
+        .bilgi {
+            font-size: 20px;
+            margin: 15px;
+        }
+
+        button {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 10px;
+            background: #00ffcc;
+            color: #14202e;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #00d9aa;
+        }
+
+        #alan {
+            position: relative;
+            width: 90%;
+            max-width: 600px;
+            height: 350px;
+            margin: 25px auto;
+            background: #ffffff;
+            border: 4px solid #00ffcc;
+            border-radius: 15px;
+            overflow: hidden;
+        }
+
+        #hedef {
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: #ff3333;
+            border: 3px solid #a80000;
+            cursor: pointer;
+            display: none;
+        }
+
+        #mesaj {
+            font-size: 22px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1>🎯 Hedefe Tıkla!</h1>
+
+    <div class="bilgi">
+        Puan: <span id="puan">0</span>
+        &nbsp; | &nbsp;
+        Süre: <span id="sure">20</span> saniye
+    </div>
+
+    <button id="baslat" onclick="oyunuBaslat()">
+        Oyunu Başlat
+    </button>
+
+    <div id="alan">
+        <button id="hedef" onclick="hedefeTikla()"></button>
+    </div>
+
+    <p id="mesaj">Başlamak için butona bas!</p>
+
+    <script>
+        let puan = 0;
+        let sure = 20;
+        let zamanlayici;
+        let oyunAktif = false;
+
+        const alan = document.getElementById("alan");
+        const hedef = document.getElementById("hedef");
+        const puanYazi = document.getElementById("puan");
+        const sureYazi = document.getElementById("sure");
+        const mesaj = document.getElementById("mesaj");
+        const baslat = document.getElementById("baslat");
+
+        function hedefiTasi() {
+            const maxX = alan.clientWidth - hedef.offsetWidth;
+            const maxY = alan.clientHeight - hedef.offsetHeight;
+
+            hedef.style.left = Math.random() * maxX + "px";
+            hedef.style.top = Math.random() * maxY + "px";
+        }
+
+        function oyunuBaslat() {
+            clearInterval(zamanlayici);
+
+            puan = 0;
+            sure = 20;
+            oyunAktif = true;
+
+            puanYazi.textContent = puan;
+            sureYazi.textContent = sure;
+            mesaj.textContent = "Hızlı ol! Hedefe tıkla!";
+            baslat.disabled = true;
+            hedef.style.display = "block";
+
+            hedefiTasi();
+
+            zamanlayici = setInterval(function() {
+                sure--;
+                sureYazi.textContent = sure;
+
+                if (sure <= 0) {
+                    clearInterval(zamanlayici);
+                    oyunAktif = false;
+                    hedef.style.display = "none";
+                    baslat.disabled = false;
+                    mesaj.textContent =
+                        "Oyun bitti! Toplam puanın: " + puan;
+                }
+            }, 1000);
+        }
+
+        function hedefeTikla() {
+            if (!oyunAktif) return;
+
+            puan++;
+            puanYazi.textContent = puan;
+            hedefiTasi();
+        }
+    </script>
+
+</body>
+</html>
